@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 import sqlite3
 from datetime import datetime
 
@@ -34,84 +34,34 @@ def home():
 # ===== ABOUT PAGE =====
 @app.route('/about')
 def about():
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>About Me</title>
-        <style>
-            body { background: #1a1a2e; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
-            h1 { color: #e94560; }
-            .container { background: #16213e; padding: 40px; border-radius: 10px; max-width: 600px; margin: auto; }
-            a { color: #4fc3f7; text-decoration: none; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>About Me</h1>
-            <p>I'm Moses Chukwuma — Cloud & DevOps Engineer in training.</p>
-            <p>This is my first Python web app on GCP, now containerized with Docker!</p>
-            <p><a href="/">Back to Home</a></p>
-        </div>
-    </body>
-    </html>
-    """
+    return render_template("about.html")
 
 # ===== CONTACT PAGE =====
 @app.route('/contact')
 def contact():
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Contact Me</title>
-        <style>
-            body { background: #1a1a2e; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
-            h1 { color: #e94560; }
-            .container { background: #16213e; padding: 40px; border-radius: 10px; max-width: 600px; margin: auto; }
-            a { color: #4fc3f7; text-decoration: none; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Contact Me</h1>
-            <p>Email: chuksyb27@gmail.com</p>
-            <p>GitHub: github.com/Chuksholymoses</p>
-            <p><a href="/">Back to Home</a></p>
-        </div>
-    </body>
-    </html>
-    """
+    return render_template("contact.html")
 
 # ===== SIGN-IN PAGE =====
 @app.route('/sign-in', methods=['GET', 'POST'])
 def sign_in():
+
     if request.method == 'POST':
-        name = request.form.get('name', '').strip().upper()
-        if name:
-            conn = sqlite3.connect('visitors.db')
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO visitors (name, visit_time) VALUES (?, ?)", (name, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-            conn.commit()
-            conn.close()
-            return """
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Thanks!</title>
-                <style>
-                    body { background: #1a1a2e; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
-                    h1 { color: #e94560; }
-                    a { color: #4fc3f7; text-decoration: none; }
-                </style>
-            </head>
-            <body>
-                <h1>Thanks """ + name + """!</h1>
-                <p>You've been recorded.</p>
-                <p><a href="/">Home</a></p>
-            </body>
-            </html>
-            """
+        name = request.form['name']
+
+        conn = sqlite3.connect('visitors.db')
+        c = conn.cursor()
+
+        c.execute(
+            "INSERT INTO visitors (name, visit_time) VALUES (?, ?)",
+            (name, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/')
+
+    return render_template("signin.html")
     
     return """
     <!DOCTYPE html>
@@ -143,34 +93,23 @@ def sign_in():
     """
 
 # ===== VISITORS LIST PAGE =====
-@app.route('/visitors')
+@app.route("/visitors")
 def visitors():
-    conn = sqlite3.connect('visitors.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT name, visit_time FROM visitors ORDER BY visit_time DESC")
-    data = cursor.fetchall()
+
+    conn = sqlite3.connect("visitors.db")
+
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM visitors")
+
+    visitors = c.fetchall()
+
     conn.close()
-    
-    if not data:
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Visitors</title>
-            <style>
-                body { background: #1a1a2e; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
-                h1 { color: #e94560; }
-                a { color: #4fc3f7; text-decoration: none; }
-            </style>
-        </head>
-        <body>
-            <h1>No visitors yet!</h1>
-            <p><a href="/sign-in">Be the first to sign in</a></p>
-            <p><a href="/">Home</a></p>
-        </body>
-        </html>
-        """
-    
+
+    return render_template(
+        "visitors.html",
+        visitors=visitors
+    )
     html = """
     <!DOCTYPE html>
     <html>
@@ -200,46 +139,33 @@ def visitors():
     return html
 
 # ===== SEARCH PAGE =====
-@app.route('/search', methods=['GET', 'POST'])
+@app.route("/search", methods=["GET", "POST"])
 def search():
-    if request.method == 'POST':
-        search_term = request.form.get('search', '').strip().upper()
-        conn = sqlite3.connect('visitors.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT name, visit_time FROM visitors WHERE name LIKE ? ORDER BY visit_time DESC", ('%' + search_term + '%',))
-        data = cursor.fetchall()
+
+    visitors = []
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+
+        conn = sqlite3.connect("visitors.db")
+
+        c = conn.cursor()
+
+        c.execute(
+            "SELECT * FROM visitors WHERE name LIKE ?",
+            ('%' + name + '%',)
+        )
+
+        visitors = c.fetchall()
+
         conn.close()
-        
-        html = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Search Results</title>
-            <style>
-                body { background: #1a1a2e; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
-                h1 { color: #e94560; }
-                ul { list-style: none; padding: 0; }
-                li { background: #16213e; padding: 10px; margin: 5px auto; border-radius: 5px; max-width: 400px; }
-                a { color: #4fc3f7; text-decoration: none; }
-            </style>
-        </head>
-        <body>
-            <h1>Search Results for: <strong>""" + search_term + """</strong></h1>
-            <p>Found """ + str(len(data)) + """ visitor(s)</p>
-            <ul>
-        """
-        for name, time in data:
-            html += "<li><strong>" + name + "</strong> - " + time + "</li>"
-        
-        html += """
-            </ul>
-            <p><a href="/search">New Search</a></p>
-            <p><a href="/">Home</a></p>
-        </body>
-        </html>
-        """
-        return html
-    
+
+    return render_template(
+        "search.html",
+        visitors=visitors
+    )
+ 
     # GET request - show search form
     return """
     <!DOCTYPE html>
@@ -269,6 +195,11 @@ def search():
     </body>
     </html>
     """
+# ===== CUSTOM 404 PAGE =====
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("404.html"), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

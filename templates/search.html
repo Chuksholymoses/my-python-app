@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Search Visitor</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Search Visitor</h1>
+
+<form method="POST">
+
+<input
+type="text"
+name="name"
+placeholder="Enter visitor name">
+
+<input
+type="submit"
+value="Search">
+
+</form>
+
+<br>
+
+{% if visitors %}
+
+<table>
+
+<tr>
+
+<th>ID</th>
+
+<th>Name</th>
+
+<th>Visit Time</th>
+
+</tr>
+
+{% for visitor in visitors %}
+
+<tr>
+
+<td>{{ visitor[0] }}</td>
+
+<td>{{ visitor[1] }}</td>
+
+<td>{{ visitor[2] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+<p>
+
+<a href="/">Home</a> |
+
+<a href="/about">About</a> |
+
+<a href="/contact">Contact</a> |
+
+<a href="/sign-in">Sign In</a> |
+
+<a href="/visitors">Visitors</a> |
+
+<a href="/search">Search</a>
+
+</p>
+
+</div>
+
+</body>
+
+</html>

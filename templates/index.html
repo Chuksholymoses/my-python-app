@@ -2,18 +2,23 @@
 <html>
 <head>
     <title>Dockerized Python App</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
 <div class="container">
 
 <pre class="docker-logo">
-       ##         .
- ## ## ##        ==
-## ## ## ## ##  ===
-/""""""""""""""\___/ ===
-\______O__________/
+               ##         .
+         ## ## ##        ==
+      ## ## ## ## ##    ===
+   /""""""""""""""""\___/ ===
+  {                       /  ===-
+   \______ O           __/
+    \    \         __/
+     \____\_______/
 </pre>
 
 <h1>Dockerized Python App</h1>
@@ -22,14 +27,14 @@
 
 <p>Total Visitors: {{ count }}</p>
 
-<nav>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-    <a href="/sign-in">Sign In</a>
-    <a href="/visitors">Visitors</a>
+<p>
+    <a href="/">Home</a> |
+    <a href="/about">About</a> |
+    <a href="/contact">Contact</a> |
+    <a href="/sign-in">Sign In</a> |
+    <a href="/visitors">Visitors</a> |
     <a href="/search">Search</a>
-</nav>
+</p>
 
 <p>Built by Moses Chukwuma</p>
 

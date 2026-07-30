@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Sign In</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Sign In</h1>
+
+<form method="POST">
+
+<p>
+<input type="text"
+name="name"
+placeholder="Enter your name"
+required>
+</p>
+
+<p>
+<input type="submit" value="Sign In">
+</p>
+
+</form>
+
+<p>
+
+<a href="/">Home</a> |
+
+<a href="/about">About</a> |
+
+<a href="/contact">Contact</a> |
+
+<a href="/sign-in">Sign In</a> |
+
+<a href="/visitors">Visitors</a> |
+
+<a href="/search">Search</a>
+
+</p>
+
+</div>
+
+</body>
+
+</html>

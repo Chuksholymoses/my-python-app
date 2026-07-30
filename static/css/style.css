@@ -32,3 +32,22 @@ a:hover{
     color:#2496ed;
     font-family:monospace;
 }
+table{
+    margin:auto;
+    margin-top:30px;
+    border-collapse:collapse;
+    width:80%;
+}
+
+table, th, td{
+    border:1px solid white;
+}
+
+th, td{
+    padding:12px;
+    text-align:center;
+}
+
+th{
+    color:#ff4d6d;
+}
